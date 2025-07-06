@@ -11,6 +11,8 @@
   transition: all 0.2s ease;
   padding: 1rem;
   border-radius: 12px;
+  height: 300px;
+  overflow: hidden;
 }
 
 .post a:hover,
