@@ -8,6 +8,14 @@
 {% block title %}{{ post.title }}{% endblock title %}
 
 {% block content %}
+
+  {% if comment_form.errors %}
+    <div id="alert">
+      <h2>Failed to add comment</h2>
+      <a href="#comment-form">Click here to fix</a>
+    </div>
+  {% endif %}
+
   <section id="summary">
     <div class="title-tag">
       <h2>{{ post.title }}</h2>
@@ -16,7 +24,7 @@
       {% endfor %}
     </div>
     <article>
-      <img src="{% static "blog/images/"|add:post.image %}" alt="{{ post.title }}" />
+      <img src="{{ post.image.url }}" alt="{{ post.title }}" />
       <address>By <a href="mailto:{{ post.author.email_address }}">{{ post.author }}</a></address>
       <div>
         Last updated on <time>{{ post.date }}</time>
@@ -29,4 +37,30 @@
       {{ post.content|linebreaks }}
     </p>
   </main>
+
+  <section id="comments">
+    <ul>
+      {% for comment in comments %}
+        <li>
+          <h2>{{ comment.user_name }}</h2>
+          <p>{{ comment.text|linebreaks }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section id="comment-form">
+    <h2>Your Comment</h2>
+    <form action="{% url "post-detail-page" post.slug %}" method="POST">
+      {% csrf_token %}
+      {% for form_field in comment_form %}
+        <div class="form-control {% if form_field.errors %}invalid{% endif %}">
+          {{ form_field.label_tag }}
+          {{ form_field }}
+          {{ form_field.errors }}
+        </div>
+      {% endfor %}
+      <button>Save Comment</button>
+    </form>
+  </section>
 {% endblock content %}
